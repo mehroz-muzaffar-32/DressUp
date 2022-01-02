@@ -57,7 +57,9 @@ const Main = ({ navigation }) => {
           </TouchableOpacity>
       </View>
       <View style={styles.container2}>
-          <TouchableOpacity style={styles.button2} >
+          <TouchableOpacity style={styles.button2} onPress={() =>
+        navigation.navigate('Selection')
+      }>
             <View style={{justifyContent:"center"}}>
               <Text style={{color:"#3195CD"}}>
                 ENTER WARDROBE
