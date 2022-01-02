@@ -1,40 +1,19 @@
 import React from 'react';
-import { Text, Button, View, Image, StyleSheet } from 'react-native';
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    alignItems: 'center',
-    height:"50%",
-    justifyContent:"center"
-  },
-  container2: {
-    width: "100%",
-    alignItems: 'center',
-    height:"25%"
-  },
-  logo: {
-    width: 120,
-    height: 120,
-  },
-  padding:{
-    paddingTop: "15%"
-  }
-});
+import Main from './Main';
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <View>
-      <View style={styles.container}>
-          <Image style={styles.logo} source={require("./Files/Images/Logo.png")} ></Image>
-      </View>
-      <View style={[styles.container2,styles.padding]}>
-          <Button title='SUGGESTIONS' />
-      </View>
-      <View style={styles.container2}>
-          <Button style={styles.margin} title='ENTER WARDROBE' />
-      </View>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{
+    headerShown: false
+  }}>
+        <Stack.Screen name="Main"
+          component={Main}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
