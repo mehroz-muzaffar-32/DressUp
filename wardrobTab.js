@@ -18,17 +18,17 @@ const styles = StyleSheet.create({
     tabItems:{
       width:40,
       height:40,
-      marginRight:10,
-      marginLeft:10
+      marginRight:20,
+      marginLeft:20
     },
     tabContainer:{
       paddingBottom:10,
-      borderBottomWidth:1,
+      borderBottomWidth:2,
       borderBottomColor:"#8C8C8C"
     },
     tabContainerB:{
       paddingBottom:10,
-      borderBottomWidth:1,
+      borderBottomWidth:2,
       borderBottomColor:"#3195CD"
     }
   });
