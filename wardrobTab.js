@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text, Button, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Text, Button, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity, ScrollView } from 'react-native';
 import shirt from './Files/Images/t-shirt.png'
 import shirtB from './Files/Images/shirtB.png'
 import jeans from './Files/Images/jeans.png'
 import jeansB from './Files/Images/jeansB.png'
 import shoe from './Files/Images/shoes.png'
 import shoeB from './Files/Images/shoesB.png'
+import sample from './Files/Images/sample.jpeg'
 const styles = StyleSheet.create({
     bar: {
       width: "100%",
@@ -30,6 +31,24 @@ const styles = StyleSheet.create({
       paddingBottom:10,
       borderBottomWidth:2,
       borderBottomColor:"#3195CD"
+    },
+    pic:{
+      width:130,
+      height:130,
+      marginLeft:10,
+      marginRight:10,
+      borderWidth:2,
+      borderColor:"grey"
+    },
+    row:{
+      marginTop:10,
+      marginBottom:10,
+      flexDirection: 'row',
+      justifyContent:"center",
+    },
+    scroll:{
+      marginTop:25,
+      marginBottom:35
     }
   });
 
@@ -50,6 +69,28 @@ const WardrobeTab = () =>{
           <Image style={styles.tabItems} source={shoeIsPress?shoeB:shoe} ></Image>
         </TouchableOpacity>
     </View>
+    <ScrollView style={styles.scroll}>
+      <View style={styles.row}>
+      <Image style={styles.pic} source={sample} ></Image>
+      <Image style={styles.pic} source={sample} ></Image>
+      </View>
+      <View style={styles.row}>
+      <Image style={styles.pic} source={sample} ></Image>
+      <Image style={styles.pic} source={sample} ></Image>
+      </View>
+      <View style={styles.row}>
+      <Image style={styles.pic} source={sample} ></Image>
+      <Image style={styles.pic} source={sample} ></Image>
+      </View>
+      <View style={styles.row}>
+      <Image style={styles.pic} source={sample} ></Image>
+      <Image style={styles.pic} source={sample} ></Image>
+      </View>
+      <View style={styles.row}>
+      <Image style={styles.pic} source={sample} ></Image>
+      <Image style={styles.pic} source={sample} ></Image>
+      </View>
+    </ScrollView>
     </View>
     );
 };

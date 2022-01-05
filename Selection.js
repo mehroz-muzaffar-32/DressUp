@@ -15,15 +15,16 @@ import SuggesstionTab from './SuggesstionTab';
 
 const styles = StyleSheet.create({
   fragment: {
-    height: "90%"
+    height: "89%"
   },
   bar: {
     width: "100%",
     alignItems: 'center',
-    height:"10%",
+    height:"12%",
     justifyContent:"center",
     paddingBottom:20,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    backgroundColor:"white"
   },
   tabItems:{
     width:40,
@@ -43,13 +44,13 @@ const styles = StyleSheet.create({
   }
 });
 
-const Selection = ({ navigation }) => {
-  const [index, setIndex] = React.useState(1);
+const Selection = ({ route }) => {
+  var [suggesstionNavigated, setSuggesstionNavigated] = React.useState(route.params.suggesstion)
+  const [index, setIndex] = React.useState(suggesstionNavigated?4:1);
   var [ wardrobIsPress, setWardrobIsPress ] = React.useState(true);
   var [ addIsPress, setAddIsPress ] = React.useState(false);
   var [ tryIsPress, setTryIsPress ] = React.useState(false);
   var [ suggesstionIsPress, setSuggesstionIsPress ] = React.useState(false);
-
   const RenderElement = () => {
     if (index === 1) {
       return <WardrobeTab />;

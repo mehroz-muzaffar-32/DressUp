@@ -60,7 +60,8 @@ const Main = ({ navigation }) => {
       <Text style={styles.text}>DRESS UP</Text>
       </View>
       <View style={[styles.container2,styles.padding]}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() =>
+        navigation.navigate('Selection',{suggesstion:true})}>
             <View style={{justifyContent:"center"}}>
               <Text style={{color:"white"}}>
                 SUGGESSTIONS
@@ -70,7 +71,7 @@ const Main = ({ navigation }) => {
       </View>
       <View style={styles.container2}>
           <TouchableOpacity style={styles.button2} onPress={() =>
-        navigation.navigate('Selection')
+        navigation.navigate('Selection',{suggesstion:false})
       }>
             <View style={{justifyContent:"center"}}>
               <Text style={{color:"#3195CD"}}>
