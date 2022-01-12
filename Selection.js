@@ -15,20 +15,21 @@ import SuggesstionTab from './SuggesstionTab';
 
 const styles = StyleSheet.create({
   fragment: {
-    height: "89%"
+    flex:1
   },
   bar: {
     width: "100%",
     alignItems: 'center',
-    height:"12%",
+    height:50,
     justifyContent:"center",
-    paddingBottom:20,
     flexDirection: 'row',
-    backgroundColor:"white"
+    backgroundColor:"white",
+    elivation:10,
+    paddingBottom:10
   },
   tabItems:{
-    width:40,
-    height:40,
+    width:30,
+    height:30,
     marginRight:20,
     marginLeft:20
   },
@@ -41,6 +42,9 @@ const styles = StyleSheet.create({
     paddingTop:10,
     borderTopWidth:2,
     borderTopColor:"#3195CD"
+  },
+  flexBox:{
+    flex:1,
   }
 });
 
@@ -64,7 +68,7 @@ const Selection = ({ route }) => {
   };
 
     return (
-      <View>
+      <View style={styles.flexBox}>
       <View style={styles.fragment}>
         <RenderElement />
       </View>

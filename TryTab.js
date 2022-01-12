@@ -11,14 +11,16 @@ const styles = StyleSheet.create({
   bar: {
     width: "100%",
     alignItems: 'center',
-    height:40,
+    height:44,
+    paddingTop:5,
     justifyContent:"center",
-    paddingTop:20,
-    flexDirection: 'row'
+    backgroundColor:"white",
+    flexDirection: 'row',
+    elevation:3
   },
   tabItems:{
-    width:40,
-    height:40,
+    width:30,
+    height:30,
     marginRight:20,
     marginLeft:20
   },
@@ -33,7 +35,11 @@ const styles = StyleSheet.create({
     borderBottomColor:"#3195CD"
   },
   container1:{
-    height:"78%"
+    flex:1
+  },
+  container2:{
+    alignItems:"center",
+    justifyContent:"center"
   },
   pic:{
     width:70,
@@ -42,7 +48,20 @@ const styles = StyleSheet.create({
     marginRight:10,
     borderWidth:2,
     borderColor:"grey"
-  }
+  },
+  scroll:{
+    marginBottom:5
+  },
+  button: {
+    backgroundColor: "#3195CD",
+    width: 150,
+    justifyContent: 'center',
+    height: 40,
+    alignItems: 'center',
+    elevation: 3,
+    marginTop:20,
+    marginBottom:20
+  },
 });
 
 const TryTab = () => {
@@ -50,7 +69,7 @@ const TryTab = () => {
   var [ jeansIsPress, setJeansIsPress ] = React.useState(false);
   var [ shoeIsPress, setShoeIsPress ] = React.useState(false);
   return(
-  <View>
+  <View style={styles.container1}>
   <View style={styles.bar}>
       <TouchableOpacity style={shirtIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(true);setShoeIsPress(false),setJeansIsPress(false)}}>
         <Image style={styles.tabItems} source={shirtIsPress?shirtB:shirt} ></Image>
@@ -62,10 +81,16 @@ const TryTab = () => {
         <Image style={styles.tabItems} source={shoeIsPress?shoeB:shoe} ></Image>
       </TouchableOpacity>
   </View>
-  <View style={styles.container1}>
-
+  <View style={[styles.container1,styles.container2]}>
+          <TouchableOpacity style={styles.button}>
+            <View style={{justifyContent:"center"}}>
+              <Text style={{color:"white"}}>
+                Add Personal Pic
+              </Text>
+            </View>
+          </TouchableOpacity>
   </View>
-  <View>
+  <View style={styles.scroll}>
     <ScrollView horizontal={true}>
       <Image style={styles.pic} source={sample} ></Image>
       <Image style={styles.pic} source={sample} ></Image>

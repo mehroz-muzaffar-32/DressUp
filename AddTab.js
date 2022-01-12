@@ -5,7 +5,7 @@ import {Picker} from '@react-native-picker/picker';
 
 const styles = StyleSheet.create({
     container2: {
-        height:"90%"
+        flex:1
     },
     container3: {
         height: "13%",
