@@ -51,10 +51,10 @@ const styles = StyleSheet.create({
 const Selection = ({ route }) => {
   var [suggesstionNavigated, setSuggesstionNavigated] = React.useState(route.params.suggesstion)
   const [index, setIndex] = React.useState(suggesstionNavigated?4:1);
-  var [ wardrobIsPress, setWardrobIsPress ] = React.useState(true);
+  var [ wardrobIsPress, setWardrobIsPress ] = React.useState(suggesstionNavigated?false:true);
   var [ addIsPress, setAddIsPress ] = React.useState(false);
   var [ tryIsPress, setTryIsPress ] = React.useState(false);
-  var [ suggesstionIsPress, setSuggesstionIsPress ] = React.useState(false);
+  var [ suggesstionIsPress, setSuggesstionIsPress ] = React.useState(suggesstionNavigated?true:false);
   const RenderElement = () => {
     if (index === 1) {
       return <WardrobeTab />;
