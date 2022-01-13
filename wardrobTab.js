@@ -11,14 +11,16 @@ const styles = StyleSheet.create({
     bar: {
       width: "100%",
       alignItems: 'center',
-      height:40,
+      height:44,
+      paddingTop:5,
       justifyContent:"center",
-      paddingTop:20,
-      flexDirection: 'row'
+      backgroundColor:"white",
+      flexDirection: 'row',
+      elevation:3
     },
     tabItems:{
-      width:40,
-      height:40,
+      width:30,
+      height:30,
       marginRight:20,
       marginLeft:20
     },
@@ -47,8 +49,7 @@ const styles = StyleSheet.create({
       justifyContent:"center",
     },
     scroll:{
-      marginTop:25,
-      marginBottom:35
+      marginBottom:40,
     }
   });
 
