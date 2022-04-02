@@ -1,5 +1,7 @@
 import React from 'react';
+import { BackHandler } from 'react-native';
 import { Text, Button, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { GetAllPermissions, checkAllPermissions } from './permisions';
 const styles = StyleSheet.create({
   container: {
     width: "100%",
@@ -51,6 +53,7 @@ const styles = StyleSheet.create({
 });
 
 const Main = ({ navigation }) => {
+  GetAllPermissions();
   return (
     <View>
       <View style={styles.container}>
