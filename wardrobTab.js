@@ -140,7 +140,7 @@ const WardrobeTab = () =>{
         <TouchableOpacity style={jeansIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(false);setShoeIsPress(false);setJeansIsPress(true);setMainitems(["pant_5.jpg",'pant_5.jpg'])}}>
           <Image style={styles.tabItems} source={jeansIsPress?jeansB:jeans} ></Image>
         </TouchableOpacity>
-        <TouchableOpacity style={shoeIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(false);setShoeIsPress(true);setJeansIsPress(false)}}>
+        <TouchableOpacity style={shoeIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(false);setShoeIsPress(true);setJeansIsPress(false);setMainitems([])}}>
           <Image style={styles.tabItems} source={shoeIsPress?shoeB:shoe} ></Image>
         </TouchableOpacity>
         
