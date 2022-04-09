@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
 const AddTab = () => {
     const [selectedValue, setSelectedValue] = React.useState("shirt");
     const [filepath, setFilepath] = React.useState(null)
-    const [filename, setFilename] = React.useState("shirt_5.jpg");
+    const [filename, setFilename] = React.useState("shirt_6.jpg");
     const pickerOptions = ['SHIRT','PANT','SHOE'];
     const [selected, setSelected] = React.useState(false);
     const [catTap, setCatTap] = React.useState(false);
