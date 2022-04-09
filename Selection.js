@@ -55,18 +55,20 @@ const Selection = ({ route }) => {
   var [ addIsPress, setAddIsPress ] = React.useState(false);
   var [ tryIsPress, setTryIsPress ] = React.useState(false);
   var [ suggesstionIsPress, setSuggesstionIsPress ] = React.useState(suggesstionNavigated?true:false);
-  const RenderElement = () => {
+  var [trypaths, setTrypaths]=React.useState(["","",""]);// try paths state is used to transfer the file names from suggesstion tab to the try tab. it is array and at first index it contains shirt name at second index it contains pant name and at the third index it contains shoe file name
+  // states end here -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
+  const RenderElement = () => { // dont change it. it is used for navigating or more specifically changing tabs
     if (index === 1) {
       return <WardrobeTab />;
     } else if (index === 2) {
       return <AddTab />;
     } else if (index == 3) {
-      return <TryTab />;
+      return <TryTab shirt={trypaths[0]} pant={trypaths[1]} shoe={trypaths[2]}/>;
     } else{
-      return <SuggesstionTab />
+      return <SuggesstionTab tryset={setTrypaths} chngIndx={setIndex} trychng={setTryIsPress} sugchng={setSuggesstionIsPress} />
     }
   };
-
+    
     return (
       <View style={styles.flexBox}>
       <View style={styles.fragment}>

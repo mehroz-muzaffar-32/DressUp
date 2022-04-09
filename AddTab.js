@@ -89,14 +89,14 @@ const styles = StyleSheet.create({
   });
 
 const AddTab = () => {
-    const [selectedValue, setSelectedValue] = React.useState("shirt");
-    const [filepath, setFilepath] = React.useState(null)
-    const [filename, setFilename] = React.useState("shirt_6.jpg");
-    const pickerOptions = ['SHIRT','PANT','SHOE'];
-    const [selected, setSelected] = React.useState(false);
-    const [catTap, setCatTap] = React.useState(false);
-
-    async function CameraIntent(){
+    const [selectedValue, setSelectedValue] = React.useState("shirt");//contains the selected value of the custom picker
+    const [filepath, setFilepath] = React.useState(null)//contains the URI of the file that is imported after the camera and gallery is used 
+    const [filename, setFilename] = React.useState("");// file name must be generated so that when it is saved it is saved by the name that is stored in this state
+    const pickerOptions = ['shirt','pant','shoe'];// options for custom picker
+    const [selected, setSelected] = React.useState(false);// used for appearing and disappearing X button
+    const [catTap, setCatTap] = React.useState(false);//Category Tap => it ensures user must change category before opening camera or gallery
+    // state ends here ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    async function CameraIntent(){ // dont change it, if a problem occurs im not gonna fix it
       await GetAllPermissions();
       let check=await checkAllPermissions();
       if(check==false)
@@ -132,7 +132,7 @@ const AddTab = () => {
           });
     }
 
-    async function GalleryIntent(){
+    async function GalleryIntent(){//dont change it, if problem occurs then im not gonna help
       await GetAllPermissions();
       let check=await checkAllPermissions();
       if(check==false)
@@ -168,7 +168,7 @@ const AddTab = () => {
           });
     }
     
-    function renderField(settings) {
+    function renderField(settings) {// dont change it, it updates the custom picker
       const { selectedItem, defaultText, getLabel, clear } = settings
       return (
         <View style={{justifyContent:"center", flexDirection:'row'}}>
@@ -189,11 +189,29 @@ const AddTab = () => {
       )
     }
 
+    function generateFilename()//function used to set the name of the file name that needs to be saved
+    {
+      /*1. must generate the file name before it is saved
+        2. set the file name using setFilename
+        3. when generating file name remember! the generated file must be unique it must not concide with the file name generated in past
+        4. one way to solve the prblem in step 3 is to add date and time as a string in file name but remember it must contain {category i.e. shirt/pant/shoe}_{id}.jpg
+        */
+    }
+
+    function deleteFile()//function used to delete in case user press X button on the image
+    {
+      /*1. when X button is pressed the file name stored in the filename state is extracted
+        2. it is then used to delete from the directory RNFS.ExternalDirectoryPath+'/'
+        3. in case there is a problem with deleting file add a prefix file://
+        4. must set filename to "" when file is deleted
+       */
+    }
+
   return (
     <View style={styles.container2}>
         <View style={styles.container}>
           <Image style={styles.logo} source={filepath==null?sample:{uri:filepath}} ></Image>
-          <TouchableOpacity style={[styles.buttonClose,selected?{display:'flex'}:{display:'none'}]}>
+          <TouchableOpacity style={[styles.buttonClose,selected?{display:'flex'}:{display:'none'}]} onPress={()=>{deleteFile(); setSelected(false); setCatTap(false); setFilepath(null);}}>
               <Text style={{color:"white"}}>
                 X
               </Text>
@@ -206,7 +224,7 @@ const AddTab = () => {
           style={styles.picker}
           fieldTemplate={renderField}
           onValueChange={value => {
-            setSelectedValue(value); setCatTap(true);
+            setSelectedValue(value); setCatTap(true); generateFilename();
           }}
         />
         </View>

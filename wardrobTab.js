@@ -9,6 +9,7 @@ import shoeB from './Files/Images/shoesB.png'
 import sample from './Files/Images/sample.jpeg'
 import trash from './Files/Images/trash.png'
 import * as RNFS from 'react-native-fs'
+
 const styles = StyleSheet.create({
     bar: {
       width: "100%",
@@ -57,12 +58,16 @@ const styles = StyleSheet.create({
       marginLeft:10,
       marginRight:10,
       borderWidth:2,
-      borderRadius:10
+      borderRadius:10,
+      marginTop:10,
+      marginBottom:10,
     },
     row:{
       marginTop:10,
       marginBottom:10,
+      flex:1,
       flexDirection: 'row',
+      flexWrap:'wrap',
       justifyContent:"center",
     },
     scroll:{
@@ -74,10 +79,43 @@ const WardrobeTab = () =>{
     var [ shirtIsPress, setShirtIsPress ] = React.useState(true);
     var [ jeansIsPress, setJeansIsPress ] = React.useState(false);
     var [ shoeIsPress, setShoeIsPress ] = React.useState(false);
-    var [longPress, setLongpress] = React.useState(false);
-    var[mainitems,setMainitems] = React.useState([]);
-    function addMainItems(fileNames)
+    var [longPress, setLongpress] = React.useState(false);// long press state for the x button that appears on the image that needs to be deleted
+    var[mainitems,setMainitems] = React.useState([]);//state for all the items that will appear on the middle of the screen contains an array
+    //state ends here -----------------------------------------------------------------------------------------------------------------------------------------
+
+    generateMainitems(1);//why is it called? because when wardrobe tab is opened by default shirt tab is opened so automatically the shirts will be shown on screen
+
+    function deleteFile(filename)//function which is called when X button is pressed on a file
     {
+      /*1. it must delete the file using the file name obtained as arg from the directory RNFS.ExternalDirectoryPath+'/'
+        2. if a problem occurs add prefix to the directory path "file://"
+       */
+    }
+
+    function generateMainitems(category)// function that generates the main items being showed on screen
+    {
+      /*1. it must read all files available in directory RNFS.ExternalDirectoryPath+'/'+fileName
+        2. filter the files obtained like if shirts then only shirts are taken
+        3. category variable contains 1,2 or 3 where 1=>shirts 2=> pants 3=>shoes
+        4. obtained and filtered file titles must be set to the state mainitems using setmainitems
+        5. in case no file is available in directory set state as []
+        */
+    }
+
+    function addMainItems(fileName)
+    {
+      var comp =<TouchableWithoutFeedback key={fileName} onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
+        <View >
+          <Image style={[styles.pic,longPress?{
+          borderColor:"#3195CD"}:{
+          borderColor:"grey"}]} source={{uri:"file://"+RNFS.ExternalDirectoryPath+'/'+fileName}} ></Image>
+          <TouchableOpacity style={[styles.buttonClose,longPress?{display:'flex'}:{display:'none'}]} onPress={()=>{setLongpress(true);deleteFile(fileName);}} >
+            <Text style={{color:'white'}}>X</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableWithoutFeedback>
+      return comp;
+      /* -----------back up code------------------------
       var renderItems=[];
       if(fileNames.length==0)
       {
@@ -85,7 +123,7 @@ const WardrobeTab = () =>{
       }
       for (var i=0; i< (fileNames.length%2==0?fileNames.length:fileNames.length-1);i+=2)
       {
-        renderItems.push(<View style={styles.row} key={i}>
+        renderItems.push(
         
           <TouchableWithoutFeedback onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
             <View >
@@ -97,25 +135,12 @@ const WardrobeTab = () =>{
               </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>
-    
-          <TouchableWithoutFeedback onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
-            <View >
-              <Image style={[styles.pic, longPress?{
-              borderColor:"#3195CD"}:{
-              borderColor:"grey"}]} source={{uri:"file://"+RNFS.ExternalDirectoryPath+'/'+fileNames[i+1]}}  ></Image>
-              <TouchableOpacity style={[styles.buttonClose,longPress?{display:'flex'}:{display:'none'}]}>
-                <Text style={{color:'white'}}>X</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableWithoutFeedback>
-        
-          </View>
+          
         );
         }
         if(fileNames.length%2!=0)
         {
-          renderItems.push(<View style={styles.row} key={fileNames.length-1}>
-            <TouchableWithoutFeedback onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
+          renderItems.push(<TouchableWithoutFeedback onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
               <View >
                 <Image style={[styles.pic,longPress?{
                 borderColor:"#3195CD"}:{
@@ -126,28 +151,36 @@ const WardrobeTab = () =>{
               </View>
             </TouchableWithoutFeedback>
       
-          </View>
+          
           );
         } 
       return renderItems;
+      -------------------back up code -------------------*/
     }
+
+    function maynItems()
+    {
+      return mainitems.map(addMainItems);
+    }
+
     return(
     <View>
-    <View style={styles.bar}>
-        <TouchableOpacity style={shirtIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(true);setShoeIsPress(false);setJeansIsPress(false);setMainitems(['shirt_6.jpg','shirt_6.jpg'])}}>
+      <View style={styles.bar}>
+        <TouchableOpacity style={shirtIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(true);setShoeIsPress(false);setJeansIsPress(false);generateMainitems(1);}}>
           <Image style={styles.tabItems} source={shirtIsPress?shirtB:shirt} ></Image>
         </TouchableOpacity>
-        <TouchableOpacity style={jeansIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(false);setShoeIsPress(false);setJeansIsPress(true);setMainitems(["pant_5.jpg",'pant_5.jpg'])}}>
+        <TouchableOpacity style={jeansIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(false);setShoeIsPress(false);setJeansIsPress(true);generateMainitems(2);}}>
           <Image style={styles.tabItems} source={jeansIsPress?jeansB:jeans} ></Image>
         </TouchableOpacity>
-        <TouchableOpacity style={shoeIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(false);setShoeIsPress(true);setJeansIsPress(false);setMainitems([])}}>
+        <TouchableOpacity style={shoeIsPress?styles.tabContainerB:styles.tabContainer} onPress={()=>{setShirtIsPress(false);setShoeIsPress(true);setJeansIsPress(false);generateMainitems(3);}}>
           <Image style={styles.tabItems} source={shoeIsPress?shoeB:shoe} ></Image>
         </TouchableOpacity>
-        
-    </View>
-    <ScrollView style={styles.scroll}>
-            {addMainItems(mainitems)}
-    </ScrollView>
+      </View>
+      <ScrollView style={styles.scroll}>
+        <View style={styles.row}>
+            {maynItems()}
+        </View>
+      </ScrollView>
     </View>
     );
 };
