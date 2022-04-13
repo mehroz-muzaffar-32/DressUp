@@ -9,7 +9,6 @@ import shoeB from './Files/Images/shoesB.png'
 import sample from './Files/Images/sample.jpeg'
 import trash from './Files/Images/trash.png'
 import * as RNFS from 'react-native-fs'
-
 const styles = StyleSheet.create({
     bar: {
       width: "100%",
@@ -74,25 +73,27 @@ const styles = StyleSheet.create({
       marginBottom:40,
     }
   });
-
 const WardrobeTab = () =>{
     var [ shirtIsPress, setShirtIsPress ] = React.useState(true);
     var [ jeansIsPress, setJeansIsPress ] = React.useState(false);
     var [ shoeIsPress, setShoeIsPress ] = React.useState(false);
     var [longPress, setLongpress] = React.useState(false);// long press state for the x button that appears on the image that needs to be deleted
     var[mainitems,setMainitems] = React.useState([]);//state for all the items that will appear on the middle of the screen contains an array
+    var [firstTime,setFirstTime]=React.useState(true);//Hmmm... First Time?
+    var [mainCategory,setMainCategory]=React.useState(1);
     //state ends here -----------------------------------------------------------------------------------------------------------------------------------------
-
-    generateMainitems(1);//why is it called? because when wardrobe tab is opened by default shirt tab is opened so automatically the shirts will be shown on screen
-
-    function deleteFile(filename)//function which is called when X button is pressed on a file
+    if(firstTime){
+      generateMainitems(1);//why is it called? because when wardrobe tab is opened by default shirt tab is opened so automatically the shirts will be shown on screen
+      setFirstTime(false);
+    }
+    async function deleteFile(filename)//function which is called when X button is pressed on a file
     {
       /*1. it must delete the file using the file name obtained as arg from the directory RNFS.ExternalDirectoryPath+'/'
         2. if a problem occurs add prefix to the directory path "file://"
        */
     }
 
-    function generateMainitems(category)// function that generates the main items being showed on screen
+    async function generateMainitems(category)// function that generates the main items being showed on screen
     {
       /*1. it must read all files available in directory RNFS.ExternalDirectoryPath+'/'+fileName
         2. filter the files obtained like if shirts then only shirts are taken

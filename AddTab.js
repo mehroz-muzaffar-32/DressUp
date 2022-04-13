@@ -189,7 +189,7 @@ const AddTab = () => {
       )
     }
 
-    function generateFilename()//function used to set the name of the file name that needs to be saved
+    function generateFilename(category)//function used to set the name of the file name that needs to be saved
     {
       /*1. must generate the file name before it is saved
         2. set the file name using setFilename
@@ -198,7 +198,7 @@ const AddTab = () => {
         */
     }
 
-    function deleteFile()//function used to delete in case user press X button on the image
+    async function deleteFile()//function used to delete in case user press X button on the image
     {
       /*1. when X button is pressed the file name stored in the filename state is extracted
         2. it is then used to delete from the directory RNFS.ExternalDirectoryPath+'/'
@@ -224,7 +224,7 @@ const AddTab = () => {
           style={styles.picker}
           fieldTemplate={renderField}
           onValueChange={value => {
-            setSelectedValue(value); setCatTap(true); generateFilename();
+            setSelectedValue(value); setCatTap(true); generateFilename(value);
           }}
         />
         </View>
