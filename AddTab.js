@@ -191,6 +191,11 @@ const AddTab = () => {
 
     function generateFilename(category)//function used to set the name of the file name that needs to be saved
     {
+      let tempCurDate=new Date();
+      let currentDate=JSON.stringify(tempCurDate).split('\"')[1].split('T')[0];
+      let currentTime=tempCurDate.getHours()+"-"+tempCurDate.getMinutes()+"-"+tempCurDate.getSeconds();
+      let id=currentDate+"_"+currentTime;
+      setFilename(category+"_"+id+".jpg");
       /*1. must generate the file name before it is saved
         2. set the file name using setFilename
         3. when generating file name remember! the generated file must be unique it must not concide with the file name generated in past
