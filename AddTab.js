@@ -189,8 +189,13 @@ const AddTab = () => {
       )
     }
 
-    function generateFilename()//function used to set the name of the file name that needs to be saved
+    function generateFilename(category)//function used to set the name of the file name that needs to be saved
     {
+      let tempCurDate=new Date();
+      let currentDate=JSON.stringify(tempCurDate).split('\"')[1].split('T')[0];
+      let currentTime=tempCurDate.getHours()+"-"+tempCurDate.getMinutes()+"-"+tempCurDate.getSeconds();
+      let id=currentDate+"_"+currentTime;
+      setFilename(category+"_"+id+".jpg");
       /*1. must generate the file name before it is saved
         2. set the file name using setFilename
         3. when generating file name remember! the generated file must be unique it must not concide with the file name generated in past
@@ -198,8 +203,16 @@ const AddTab = () => {
         */
     }
 
-    function deleteFile()//function used to delete in case user press X button on the image
+    async function deleteFile()//function used to delete in case user press X button on the image
     {
+      let imagePath=RNFS.ExternalDirectoryPath+'/'+filename;
+      let exists = await RNFS.exists(imagePath);
+      if(exists){
+          // exists call delete
+          await RNFS.unlink(imagePath);
+      }else{
+          console.log("File Not Available")
+      }
       /*1. when X button is pressed the file name stored in the filename state is extracted
         2. it is then used to delete from the directory RNFS.ExternalDirectoryPath+'/'
         3. in case there is a problem with deleting file add a prefix file://
@@ -224,7 +237,7 @@ const AddTab = () => {
           style={styles.picker}
           fieldTemplate={renderField}
           onValueChange={value => {
-            setSelectedValue(value); setCatTap(true); generateFilename();
+            setSelectedValue(value); setCatTap(true); generateFilename(value);
           }}
         />
         </View>

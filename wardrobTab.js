@@ -9,7 +9,6 @@ import shoeB from './Files/Images/shoesB.png'
 import sample from './Files/Images/sample.jpeg'
 import trash from './Files/Images/trash.png'
 import * as RNFS from 'react-native-fs'
-
 const styles = StyleSheet.create({
     bar: {
       width: "100%",
@@ -74,26 +73,49 @@ const styles = StyleSheet.create({
       marginBottom:40,
     }
   });
-
 const WardrobeTab = () =>{
     var [ shirtIsPress, setShirtIsPress ] = React.useState(true);
     var [ jeansIsPress, setJeansIsPress ] = React.useState(false);
     var [ shoeIsPress, setShoeIsPress ] = React.useState(false);
     var [longPress, setLongpress] = React.useState(false);// long press state for the x button that appears on the image that needs to be deleted
     var[mainitems,setMainitems] = React.useState([]);//state for all the items that will appear on the middle of the screen contains an array
+    var [firstTime,setFirstTime]=React.useState(true);//Hmmm... First Time?
+    var [mainCategory,setMainCategory]=React.useState(1);
     //state ends here -----------------------------------------------------------------------------------------------------------------------------------------
-
-    generateMainitems(1);//why is it called? because when wardrobe tab is opened by default shirt tab is opened so automatically the shirts will be shown on screen
-
-    function deleteFile(filename)//function which is called when X button is pressed on a file
+    if(firstTime){
+      generateMainitems(1);//why is it called? because when wardrobe tab is opened by default shirt tab is opened so automatically the shirts will be shown on screen
+      setFirstTime(false);
+    }
+    async function deleteFile(filename)//function which is called when X button is pressed on a file
     {
+      let imagePath=RNFS.ExternalDirectoryPath+'/'+filename;
+      let exists = await RNFS.exists(imagePath);
+      if(exists){
+          await RNFS.unlink(imagePath);
+      }else{
+          console.log("File Not Available")
+      }
+      generateMainitems(mainCategory);
       /*1. it must delete the file using the file name obtained as arg from the directory RNFS.ExternalDirectoryPath+'/'
         2. if a problem occurs add prefix to the directory path "file://"
        */
     }
 
-    function generateMainitems(category)// function that generates the main items being showed on screen
+    async function generateMainitems(category)// function that generates the main items being showed on screen
     {
+      let categoryMap={1:"shirt",2:"pant",3:"shoe"};
+      const imageNames = await RNFS.readDir(RNFS.ExternalDirectoryPath);
+      const imageNamesOfCategory=[];
+      for(let i=0;i<imageNames.length;i++)
+      {
+        let imageName=imageNames[i].name;
+        if(imageName.includes(categoryMap[category]))
+        {
+          imageNamesOfCategory.push(imageName);
+        }
+      }
+      setMainitems(imageNamesOfCategory);
+      setMainCategory(category);
       /*1. it must read all files available in directory RNFS.ExternalDirectoryPath+'/'+fileName
         2. filter the files obtained like if shirts then only shirts are taken
         3. category variable contains 1,2 or 3 where 1=>shirts 2=> pants 3=>shoes
