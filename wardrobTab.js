@@ -103,6 +103,19 @@ const WardrobeTab = () =>{
 
     async function generateMainitems(category)// function that generates the main items being showed on screen
     {
+      let categoryMap={1:"shirt",2:"pant",3:"shoe"};
+      const imageNames = await RNFS.readDir(RNFS.ExternalDirectoryPath);
+      const imageNamesOfCategory=[];
+      for(let i=0;i<imageNames.length;i++)
+      {
+        let imageName=imageNames[i].name;
+        if(imageName.includes(categoryMap[category]))
+        {
+          imageNamesOfCategory.push(imageName);
+        }
+      }
+      setMainitems(imageNamesOfCategory);
+      setMainCategory(category);
       /*1. it must read all files available in directory RNFS.ExternalDirectoryPath+'/'+fileName
         2. filter the files obtained like if shirts then only shirts are taken
         3. category variable contains 1,2 or 3 where 1=>shirts 2=> pants 3=>shoes
