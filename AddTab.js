@@ -205,6 +205,14 @@ const AddTab = () => {
 
     async function deleteFile()//function used to delete in case user press X button on the image
     {
+      let imagePath=RNFS.ExternalDirectoryPath+'/'+filename;
+      let exists = await RNFS.exists(imagePath);
+      if(exists){
+          // exists call delete
+          await RNFS.unlink(imagePath);
+      }else{
+          console.log("File Not Available")
+      }
       /*1. when X button is pressed the file name stored in the filename state is extracted
         2. it is then used to delete from the directory RNFS.ExternalDirectoryPath+'/'
         3. in case there is a problem with deleting file add a prefix file://
