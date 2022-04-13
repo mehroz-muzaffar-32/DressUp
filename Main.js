@@ -1,5 +1,7 @@
 import React from 'react';
-import { Text, Button, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { GetAllPermissions, checkAllPermissions } from './permisions';
+
 const styles = StyleSheet.create({
   container: {
     width: "100%",
@@ -51,17 +53,19 @@ const styles = StyleSheet.create({
 });
 
 const Main = ({ navigation }) => {
+  GetAllPermissions(); // get permissions at the start of the app 
+  
   return (
     <View>
       <View style={styles.container}>
           <Image style={styles.logo} source={require("./Files/Images/Logo.png")} ></Image>
       </View>
       <View style={styles.container3}>
-      <Text style={styles.text}>DRESS UP</Text>
+        <Text style={styles.text}>DRESS UP</Text>
       </View>
       <View style={[styles.container2,styles.padding]}>
           <TouchableOpacity style={styles.button} onPress={() =>
-        navigation.navigate('Selection',{suggesstion:true})}>
+          navigation.navigate('Selection',{suggesstion:true})}>
             <View style={{justifyContent:"center"}}>
               <Text style={{color:"white"}}>
                 SUGGESSTIONS
@@ -71,8 +75,8 @@ const Main = ({ navigation }) => {
       </View>
       <View style={styles.container2}>
           <TouchableOpacity style={styles.button2} onPress={() =>
-        navigation.navigate('Selection',{suggesstion:false})
-      }>
+          navigation.navigate('Selection',{suggesstion:false})
+          }>
             <View style={{justifyContent:"center"}}>
               <Text style={{color:"#3195CD"}}>
                 ENTER WARDROBE
@@ -80,13 +84,7 @@ const Main = ({ navigation }) => {
             </View>
           </TouchableOpacity>
       </View>
-    </View>/*
-    <Button
-      title="Go to Jane's profile"
-      onPress={() =>
-        navigation.navigate('Profile', { name: 'Jane' })
-      }
-    />*/
+    </View>
   );
 };
 
