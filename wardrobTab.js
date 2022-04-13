@@ -88,6 +88,14 @@ const WardrobeTab = () =>{
     }
     async function deleteFile(filename)//function which is called when X button is pressed on a file
     {
+      let imagePath=RNFS.ExternalDirectoryPath+'/'+filename;
+      let exists = await RNFS.exists(imagePath);
+      if(exists){
+          await RNFS.unlink(imagePath);
+      }else{
+          console.log("File Not Available")
+      }
+      generateMainitems(mainCategory);
       /*1. it must delete the file using the file name obtained as arg from the directory RNFS.ExternalDirectoryPath+'/'
         2. if a problem occurs add prefix to the directory path "file://"
        */
