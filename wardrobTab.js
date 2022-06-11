@@ -9,6 +9,8 @@ import shoeB from './Files/Images/shoesB.png'
 import sample from './Files/Images/sample.jpeg'
 import trash from './Files/Images/trash.png'
 import * as RNFS from 'react-native-fs'
+import {useNavigation} from '@react-navigation/native';
+import Icons from 'react-native-vector-icons/MaterialIcons';
 const styles = StyleSheet.create({
     bar: {
       width: "100%",
@@ -32,7 +34,7 @@ const styles = StyleSheet.create({
       borderBottomColor:"#8C8C8C"
     },
     buttonClose: {
-      backgroundColor: "#eb3434",
+      backgroundColor: "gray",
       justifyContent: 'center',
       alignItems: 'center',
       elevation: 20,
@@ -73,7 +75,8 @@ const styles = StyleSheet.create({
       marginBottom:40,
     }
   });
-const WardrobeTab = () =>{
+const WardrobeTab = (props) =>{
+   const navigation = useNavigation();
     var [ shirtIsPress, setShirtIsPress ] = React.useState(true);
     var [ jeansIsPress, setJeansIsPress ] = React.useState(false);
     var [ shoeIsPress, setShoeIsPress ] = React.useState(false);
@@ -126,13 +129,13 @@ const WardrobeTab = () =>{
 
     function addMainItems(fileName)
     {
-      var comp =<TouchableWithoutFeedback key={fileName} onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
+      var comp =<TouchableWithoutFeedback key={fileName} onPress={() =>navigation.navigate('FullView',{imageName : fileName,deleteImage:deleteFile})} onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
         <View >
           <Image style={[styles.pic,longPress?{
           borderColor:"#3195CD"}:{
           borderColor:"grey"}]} source={{uri:"file://"+RNFS.ExternalDirectoryPath+'/'+fileName}} ></Image>
           <TouchableOpacity style={[styles.buttonClose,longPress?{display:'flex'}:{display:'none'}]} onPress={()=>{setLongpress(true);deleteFile(fileName);}} >
-            <Text style={{color:'white'}}>X</Text>
+            <Icons name={'delete'} size={20} color="red" solid></Icons>
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
