@@ -1,11 +1,10 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { Text,Alert,ImageBackground,View,Dimensions,Image,StyleSheet,TouchableOpacity } from 'react-native';
+import { View,Dimensions,Image,StyleSheet,TouchableOpacity } from 'react-native';
 import * as RNFS from 'react-native-fs'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
-import WardrobeTab from './wardrobTab';
 const styles=StyleSheet.create({
   rowSharing: 
   {
@@ -37,17 +36,17 @@ const FullView = (props) => {
    let windowWidth=Dimensions.get('window').width;
    return (
     <View style={{backgroundColor:"black"}}>
-      <ImageBackground style={{width:windowWidth,height:windowHeight}} resizeMode="contain" source={imagePath}></ImageBackground>
+      <Image style={{width:windowWidth,height:windowHeight}} resizeMode="contain" source={imagePath}></Image>
       <View style={styles.ButtonDiv}>
         <View style={styles.rowSharing}>
-          <View style={[styles.Button,{marginLeft:"10%"}]}>
+          <View style={[styles.Button,{marginLeft:"5%"}]}>
             <TouchableOpacity onPress={()=>navigation.goBack()}>
-              <Ionicons name={'return-up-back'} size={60} color="green" solid></Ionicons>
+              <Ionicons name={'return-up-back'} size={45} color="white" solid></Ionicons>
             </TouchableOpacity>
           </View>
-          <View style={[styles.Button,{marginRight:"10%"}]}>
+          <View style={[styles.Button,{marginRight:"1%"}]}>
             <TouchableOpacity onPress={()=>{navigation.goBack();deleteImage(imageName)}}>
-               <MaterialIcons name={'delete'} size={60} color="red" solid></MaterialIcons>
+               <MaterialIcons name={'delete'} size={40} color="white" solid></MaterialIcons>
             </TouchableOpacity>
           </View>
         </View>  

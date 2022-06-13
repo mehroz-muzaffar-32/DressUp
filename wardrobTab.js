@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
       borderBottomColor:"#8C8C8C"
     },
     buttonClose: {
-      backgroundColor: "gray",
+      backgroundColor: "#eb3434",
       justifyContent: 'center',
       alignItems: 'center',
       elevation: 20,
@@ -135,7 +135,7 @@ const WardrobeTab = (props) =>{
           borderColor:"#3195CD"}:{
           borderColor:"grey"}]} source={{uri:"file://"+RNFS.ExternalDirectoryPath+'/'+fileName}} ></Image>
           <TouchableOpacity style={[styles.buttonClose,longPress?{display:'flex'}:{display:'none'}]} onPress={()=>{setLongpress(true);deleteFile(fileName);}} >
-            <Icons name={'delete'} size={20} color="red" solid></Icons>
+            <Text style={{color:'white'}}>X</Text>
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
