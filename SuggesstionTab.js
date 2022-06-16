@@ -57,15 +57,44 @@ const SuggesstionTab = (props) => {
 var [shirtpath, setShirtpath] = React.useState("");
 var [pantpath, setPantpath] = React.useState("");
 var [shoepath, setShoepath] = React.useState("");
-refreshSuggesstion();//why is it called? becaus when app runs in start and suggesstion tab is opened it will refresh suggesstions right away
-
+var [firstTime,setFirstTime]=React.useState(true);//Hmmm... First Time?
+if(firstTime){
+  refreshSuggesstion();//why is it called? becaus when app runs in start and suggesstion tab is opened it will refresh suggesstions right away
+  setFirstTime(false);
+}
 function filenamesReturn() //dont change it, as it changes state when images are refreshed
 {
   props.tryset([shirtpath,pantpath,shoepath]);
 }
 
-function refreshSuggesstion()
+async function refreshSuggesstion()
 {
+  const imageFiles = await RNFS.readDir(RNFS.ExternalDirectoryPath);
+  const imageNames=imageFiles.map((imageFile)=>{return imageFile.name;});
+  const categories=["shirt","pant","shoe"];
+  const imageNamesCategory=[[],[],[]];
+  for(let i=0;i<imageNames.length;i++)
+  {
+    for(let j=0;j<3;j++)
+    {
+      if(imageNames[i].includes(categories[j]))
+      {
+        imageNamesCategory[j].push(imageNames[i]);
+      }
+    }
+  }
+  let funcArr=[setShirtpath,setPantpath,setShoepath];
+  for(let i=0;i<3;i++)
+  {
+    if(imageNamesCategory[i].length!=0)
+    {
+      funcArr[i](imageNamesCategory[i][Math.floor(Math.random()*imageNamesCategory[i].length)]);
+    }
+    else
+    {
+      funcArr[i]([""]);
+    }
+  }
   /* -- code here --
   Q-> what should it do?
   A-> 1. Must read filenames from the directiory "RNFS.ExternalDirectoryPath+'/'" 

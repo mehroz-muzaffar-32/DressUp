@@ -102,9 +102,12 @@ const TryTab = (props) => {
   var [shirtTryName, setShirtTryName] = React.useState(props.shirt);//shirt name for the shirt that will be tried on user's pic. use it in image source by using this {uri:"file://"+RNFS.ExternalDirectoryPath+'/'+shirtpath}<--file name here same goes for 2 states below
   var [pantTryName, setPantTryName] = React.useState(props.pant);//pant name for the pant that will be tried on user's pic. use it in image source by using this {uri:"file://"+RNFS.ExternalDirectoryPath+'/'+pantpath} in image source
   var [shoeTryName, setShoeTryName] = React.useState(props.shoe);//shoe name for the shoe that will be tried on user's pic. use it in image source by using this {uri:"file://"+RNFS.ExternalDirectoryPath+'/'+shoepath} in image source
+  var [firstTime,setFirstTime]=React.useState(true);//Hmmm... First Time?
   // States End here-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  readFilesForScroll(1);// why is it called? its because when try tab is opened by default shirts part/fragment is opened hence 1 is added in category so that it loads all shirt names
-
+  if(firstTime){
+    readFilesForScroll(1);// why is it called? its because when try tab is opened by default shirts part/fragment is opened hence 1 is added in category so that it loads all shirt names
+    setFirstTime(false);
+  }
   async function GalleryIntent(){ // please dont change it, if a problem occurs im not gonna fix it
     await GetAllPermissions();
     let check=await checkAllPermissions();
@@ -133,8 +136,20 @@ const TryTab = (props) => {
         });
   }
   
-  function readFilesForScroll(category)//function for the updation of the scroll menu on the bottom of the screen. it basically updates the scroll menu by updating the state files. files state must contain file names only not directory path or URI must beincluded.
+  async function readFilesForScroll(category)//function for the updation of the scroll menu on the bottom of the screen. it basically updates the scroll menu by updating the state files. files state must contain file names only not directory path or URI must beincluded.
   {
+    let categoryMap={1:"shirt",2:"pant",3:"shoe"};
+    const imageFiles = await RNFS.readDir(RNFS.ExternalDirectoryPath);
+    const imageFilesOfCategory=[];
+    for(let i=0;i<imageFiles.length;i++)
+    {
+      let imageName=imageFiles[i].name;
+      if(imageName.includes(categoryMap[category]))
+      {
+        imageFilesOfCategory.push(imageName);
+      }
+    }
+    setfiles(imageFilesOfCategory);
     /*1. category id the integer variable that contains 1 or 2 or 3. 1 is for shirts. 2 is for pants and 3 is for shoe.
       2. based on integer stored in category must read files from the directory "RNFS.ExternalDirectoryPath+'/'".
       3. files readed must be inserted to files state in form of array.

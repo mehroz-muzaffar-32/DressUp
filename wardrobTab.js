@@ -9,6 +9,8 @@ import shoeB from './Files/Images/shoesB.png'
 import sample from './Files/Images/sample.jpeg'
 import trash from './Files/Images/trash.png'
 import * as RNFS from 'react-native-fs'
+import {useNavigation} from '@react-navigation/native';
+import Icons from 'react-native-vector-icons/MaterialIcons';
 const styles = StyleSheet.create({
     bar: {
       width: "100%",
@@ -73,7 +75,8 @@ const styles = StyleSheet.create({
       marginBottom:40,
     }
   });
-const WardrobeTab = () =>{
+const WardrobeTab = (props) =>{
+   const navigation = useNavigation();
     var [ shirtIsPress, setShirtIsPress ] = React.useState(true);
     var [ jeansIsPress, setJeansIsPress ] = React.useState(false);
     var [ shoeIsPress, setShoeIsPress ] = React.useState(false);
@@ -104,17 +107,17 @@ const WardrobeTab = () =>{
     async function generateMainitems(category)// function that generates the main items being showed on screen
     {
       let categoryMap={1:"shirt",2:"pant",3:"shoe"};
-      const imageNames = await RNFS.readDir(RNFS.ExternalDirectoryPath);
-      const imageNamesOfCategory=[];
-      for(let i=0;i<imageNames.length;i++)
+      const imageFiles = await RNFS.readDir(RNFS.ExternalDirectoryPath);
+      const imageFilesOfCategory=[];
+      for(let i=0;i<imageFiles.length;i++)
       {
-        let imageName=imageNames[i].name;
+        let imageName=imageFiles[i].name;
         if(imageName.includes(categoryMap[category]))
         {
-          imageNamesOfCategory.push(imageName);
+          imageFilesOfCategory.push(imageName);
         }
       }
-      setMainitems(imageNamesOfCategory);
+      setMainitems(imageFilesOfCategory);
       setMainCategory(category);
       /*1. it must read all files available in directory RNFS.ExternalDirectoryPath+'/'+fileName
         2. filter the files obtained like if shirts then only shirts are taken
@@ -126,7 +129,7 @@ const WardrobeTab = () =>{
 
     function addMainItems(fileName)
     {
-      var comp =<TouchableWithoutFeedback key={fileName} onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
+      var comp =<TouchableWithoutFeedback key={fileName} onPress={() =>navigation.navigate('FullView',{imageName : fileName,deleteImage:deleteFile})} onLongPress={()=>{if (longPress==false){setLongpress(true);}else {setLongpress(false);}}}>
         <View >
           <Image style={[styles.pic,longPress?{
           borderColor:"#3195CD"}:{

@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color:"#3195CD",
-    fontSize: 24
+    fontSize: 24,
+    fontFamily:"Comic Sans MS",
   }
 });
 
@@ -67,7 +68,7 @@ const Main = ({ navigation }) => {
           <TouchableOpacity style={styles.button} onPress={() =>
           navigation.navigate('Selection',{suggesstion:true})}>
             <View style={{justifyContent:"center"}}>
-              <Text style={{color:"white"}}>
+              <Text style={{color:"white",fontFamily:"Comic Sans MS",}}>
                 SUGGESSTIONS
               </Text>
             </View>
@@ -78,7 +79,7 @@ const Main = ({ navigation }) => {
           navigation.navigate('Selection',{suggesstion:false})
           }>
             <View style={{justifyContent:"center"}}>
-              <Text style={{color:"#3195CD"}}>
+              <Text style={{color:"#3195CD",fontFamily:"Comic Sans MS",}}>
                 ENTER WARDROBE
               </Text>
             </View>
