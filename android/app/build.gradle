@@ -127,7 +127,7 @@ def nativeArchitectures = project.getProperties().get("reactNativeDebugArchitect
 
 
 //BSEF18M004-Mehroz Muzaffar
-def opencvsdk='M:\\PUCIT\\7th_Semester\\CapstoneProject-I\\testing-react-native\\OpenCV\\OpenCV-android-sdk\\opencv'
+def opencvsdk='M:\\PUCIT\\8th Semester\\Opencv\\sdk'
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -215,6 +215,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation project(path: ':opencv')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

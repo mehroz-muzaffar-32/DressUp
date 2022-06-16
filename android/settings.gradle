@@ -5,6 +5,6 @@ apply from: file("../node_modules/@react-native-community/cli-platform-android/n
 include ':app'
 
 //BSEF18M004-Mehroz Muzaffar
-def opencvsdk='M:\\PUCIT\\7th_Semester\\CapstoneProject-I\\testing-react-native\\OpenCV\\OpenCV-android-sdk\\opencv'
+def opencvsdk='M:\\PUCIT\\8th Semester\\Opencv\\sdk'
 include ':opencv'
 project(':opencv').projectDir = new File(opencvsdk)
