@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Button, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity, NativeModules, ActivityIndicator, Alert } from 'react-native';
+import { Text, Button, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
 import sample from './Files/Images/sample.jpeg';
 import {Picker} from '@react-native-picker/picker';
 import * as ImagePicker from 'react-native-image-picker/src';
@@ -12,9 +12,6 @@ import photo from './Files/Images/photo.png';
 import { CustomPicker } from 'react-native-custom-picker';
 import down from './Files/Images/down.png';
 import next from  './Files/Images/next.png';
-import axios from 'axios';
-
-const {DressUpModule}=NativeModules;
 
 const styles = StyleSheet.create({
     container2: {
@@ -42,17 +39,6 @@ const styles = StyleSheet.create({
         marginBottom:20,
       borderRadius: 100,
       },
-      buttonDisabled: {
-          backgroundColor: "#c6e6f7",
-          width: 150,
-          justifyContent: 'center',
-          height: 40,
-          alignItems: 'center',
-          elevation: 3,
-          marginTop:20,
-          marginBottom:20,
-        borderRadius: 100,
-        },
       buttonClose: {
         backgroundColor: "#eb3434",
         justifyContent: 'center',
@@ -69,19 +55,6 @@ const styles = StyleSheet.create({
       },
       button2: {
         backgroundColor: "white",
-        borderColor: 'green',
-        borderRadius:100,
-        borderWidth:2,
-        width: 150,
-        justifyContent: 'center',
-        height: 40,
-        alignItems: 'center',
-        elevation: 3,
-        marginTop:20,
-        marginBottom:20
-      },
-      button2Disabled: {
-        backgroundColor: "#adadad",
         borderColor: 'green',
         borderRadius:100,
         borderWidth:2,
@@ -122,60 +95,7 @@ const AddTab = () => {
     const pickerOptions = ['shirt','pant','shoe'];// options for custom picker
     const [selected, setSelected] = React.useState(false);// used for appearing and disappearing X button
     const [catTap, setCatTap] = React.useState(false);//Category Tap => it ensures user must change category before opening camera or gallery
-    var [isLoading, setIsLoading]=React.useState(false);
     // state ends here ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    async function uploadRawImage(clothe)
-    {
-      try
-      {
-          let clothepath = 'file://'+RNFS.ExternalDirectoryPath+'/'+clothe;
-          const formdata = new FormData();
-          formdata.append("clotheImage",{
-            uri:clothepath,
-            type:`image/${clothe.split('.')[1]}`,
-            name:clothe
-          })
-          let response = await fetch('http://192.168.0.102:3000/',{
-            method:'post',
-            body: formdata,
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-          const message = await response.text();
-          return message;
-      }catch(err){
-          console.log(JSON.stringify(err));
-          return "Failure";
-      }
-    }
-    function downloadClippedImage(message)
-    {
-      if(message=="Success")
-      {
-        axios({
-          url: "http://192.168.0.102:3000/",
-          method: 'get',
-          responseType: 'blob',
-        }).then((response)=>{
-          let file = new Blob([response.data]);
-          let reader = new FileReader();
-          reader.addEventListener("loadend", (e)=>{
-            RNFS.writeFile(RNFS.ExternalDirectoryPath+"/"+filename,reader.result.replace("data:application/octet-stream;base64,",""),"base64");
-            setIsLoading(false);
-          });
-          reader.readAsDataURL(file);
-        }).catch((error)=>{
-          setIsLoading(false);
-          console.log(JSON.stringify(error));
-        })
-      }else{
-        console.log(message);
-        setIsLoading(false);
-      }
-    }
-
     async function CameraIntent(){ // dont change it, if a problem occurs im not gonna fix it
       await GetAllPermissions();
       let check=await checkAllPermissions();
@@ -183,35 +103,29 @@ const AddTab = () => {
       {
         return;
       }
-      setIsLoading(true);
       let options = {
           storageOptions: {
             skipBackup: true,
             path: 'images',
           },
         };
-        ImagePicker.launchCamera(options , async (res) => {
+        ImagePicker.launchCamera(options , (res) => {
           if (res.didCancel) {
             console.log('User cancelled image picker');
-            setIsLoading(false);
           } else if (res.error) {
             console.log('ImagePicker Error: ', res.error);
-            setIsLoading(false);
           } else if (res.customButton) {
             console.log('User tapped custom button: ', res.customButton);
             alert(res.customButton);
-            setIsLoading(false);
           }
           else {
-            DressUpModule.optimizeSizeAndSave(res.assets[0].uri.replace("file://",""), filename);
-            let message = await uploadRawImage(filename);
-            downloadClippedImage(message);
-                // RNFS.copyFile(res.assets[0].uri.replace("file://",""), RNFS.ExternalDirectoryPath+'/'+filename)
-                // .then(res => {})
-                // .catch(err => {
-                //     console.log('ERROR: image file write failed!!!');
-                //     console.log(err.message, err.code);
-                // });
+                RNFS.copyFile(res.assets[0].uri.replace("file://",""), RNFS.ExternalDirectoryPath+'/'+filename)
+                .then(res => {})
+                .catch(err => {
+                    console.log('ERROR: image file write failed!!!');
+                    console.log(err.message, err.code);
+                    
+         });
           setSelected(true);
           setFilepath(res.assets[0].uri);
          }
@@ -225,35 +139,29 @@ const AddTab = () => {
       {
         return;
       }
-      setIsLoading(true);
       let options = {
           storageOptions: {
             skipBackup: true,
             path: 'images',
           },
         };
-        ImagePicker.launchImageLibrary(options , async (res) => {
+        ImagePicker.launchImageLibrary(options , (res) => {
           if (res.didCancel) {
             console.log('User cancelled image picker');
-            setIsLoading(false);
           } else if (res.error) {
             console.log('ImagePicker Error: ', res.error);
-            setIsLoading(false);
           } else if (res.customButton) {
             console.log('User tapped custom button: ', res.customButton);
             alert(res.customButton);
-            setIsLoading(false);
           }
           else {
-                DressUpModule.optimizeSizeAndSave(res.assets[0].uri.replace("file://",""), filename);
-                let message = await uploadRawImage(filename);
-                downloadClippedImage(message);
-                // RNFS.copyFile(res.assets[0].uri.replace("file://",""), RNFS.ExternalDirectoryPath+'/'+filename)
-                // .then(res => {})
-                // .catch(err => {
-                //     console.log('ERROR: image file write failed!!!');
-                //     console.log(err.message, err.code);
-                // });
+                RNFS.copyFile(res.assets[0].uri.replace("file://",""), RNFS.ExternalDirectoryPath+'/'+filename)
+                .then(res => {})
+                .catch(err => {
+                    console.log('ERROR: image file write failed!!!');
+                    console.log(err.message, err.code);
+                    
+         });
           setSelected(true);
           setFilepath(res.assets[0].uri);
          }
@@ -287,7 +195,7 @@ const AddTab = () => {
       let currentDate=JSON.stringify(tempCurDate).split('\"')[1].split('T')[0];
       let currentTime=tempCurDate.getHours()+"-"+tempCurDate.getMinutes()+"-"+tempCurDate.getSeconds();
       let id=currentDate+"_"+currentTime;
-      setFilename(category+"_"+id+".png");
+      setFilename(category+"_"+id+".jpg");
       /*1. must generate the file name before it is saved
         2. set the file name using setFilename
         3. when generating file name remember! the generated file must be unique it must not concide with the file name generated in past
@@ -315,7 +223,7 @@ const AddTab = () => {
   return (
     <View style={styles.container2}>
         <View style={styles.container}>
-          {isLoading?<ActivityIndicator size={'large'} style={styles.logo}></ActivityIndicator>:<Image style={styles.logo} source={filepath==null?sample:{uri:filepath}} ></Image>}
+          <Image style={styles.logo} source={filepath==null?sample:{uri:filepath}} ></Image>
           <TouchableOpacity style={[styles.buttonClose,selected?{display:'flex'}:{display:'none'}]} onPress={()=>{deleteFile(); setSelected(false); setCatTap(false); setFilepath(null);}}>
               <Text style={{color:"white"}}>
                 X
@@ -323,7 +231,7 @@ const AddTab = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.container3} >
-        <CustomPicker
+        <CustomPicker 
           placeholder={'Category'}
           options={pickerOptions}
           style={styles.picker}
@@ -334,7 +242,7 @@ const AddTab = () => {
         />
         </View>
         <View style={styles.container3}>
-        <TouchableOpacity disabled={isLoading} style={isLoading?styles.buttonDisabled:styles.button} onPress={()=>{catTap?GalleryIntent():alert("please choose catergory!")}}>
+        <TouchableOpacity style={styles.button} onPress={()=>{catTap?GalleryIntent():alert("please choose catergory!")}}>
             <View style={{justifyContent:"center", flexDirection:'row'}}>
             <Image style={{marginRight:22, width:20, height:20}} source={gallery} ></Image>
               <Text style={{color:"white", marginRight:15}}>
@@ -344,7 +252,7 @@ const AddTab = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.container3}>
-        <TouchableOpacity disabled={isLoading} style={isLoading?styles.buttonDisabled:styles.button} onPress={()=>{catTap?CameraIntent():alert("please choose category!")}}>
+        <TouchableOpacity style={styles.button} onPress={()=>{catTap?CameraIntent():alert("please choose category!")}}>
             <View style={{justifyContent:"center", flexDirection:'row'}}>
             <Image style={{marginRight:10, width:20, height:20}} source={photo} ></Image>
               <Text style={{color:"white"}}>
@@ -354,7 +262,7 @@ const AddTab = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.container3}>
-        <TouchableOpacity disabled={isLoading} style={isLoading?styles.button2Disabled:styles.button2} onPress={()=>{setFilepath(null); setSelected(false); setCatTap(false);}}>
+        <TouchableOpacity style={styles.button2} onPress={()=>{setFilepath(null); setSelected(false); setCatTap(false);}}>
             <View style={{justifyContent:"center", flexDirection:'row'}}>
             <Image style={{marginRight:30, width:21, height:21}} source={next} ></Image>
               <Text style={{color:"green", fontSize:14, marginRight:25}}>
@@ -363,7 +271,6 @@ const AddTab = () => {
             </View>
           </TouchableOpacity>
         </View>
-        {/* <ActivityIndicator size={'large'} style={{width:"100%",height:"100%",position:"absolute", backgroundColor:"rgba(0,0,0,0.5)"}} /> */}
     </View>
   );
 }
