@@ -87,23 +87,30 @@ public class DressUpNativeModule extends ReactContextBaseJavaModule {
     }
 
     private void overlayImage(Mat image, Mat overlay, Point overlayPos, Size overlaySize) {
-//        Size imageSize=image.size();
-//        overlayPos.x=Math.max(overlayPos.x,0.0);
-//        overlayPos.y=Math.max(overlayPos.y,0.0);
-//        double widthGap, heightGap;
-//        widthGap=imageSize.width-overlayPos.x;
-//        heightGap=imageSize.height-overlayPos.y;
-//        Size optimizedSize=fitSize(overlaySize, new Size(widthGap-1,heightGap-1));
-        Imgproc.resize(overlay, overlay, overlaySize);
-        Mat subMat = image.submat(new Rect(overlayPos, overlaySize));
-        ArrayList<Mat> channels = new ArrayList<>();
-        Core.split(overlay, channels);
-        Mat mask=new Mat();
-        channels.get(channels.size()-1).convertTo(mask, CvType.CV_8U);
+
+        try {
+            Size imageSize=image.size();
+            overlayPos.x=Math.max(overlayPos.x,0.0);
+            overlayPos.y=Math.max(overlayPos.y,0.0);
+            double widthGap, heightGap;
+            widthGap=imageSize.width-overlayPos.x;
+            heightGap=imageSize.height-overlayPos.y;
+            Size optimizedSize=new Size(Math.min(overlaySize.width,widthGap), Math.min(overlaySize.height,heightGap));
+
+            Imgproc.resize(overlay, overlay, overlaySize);
+            Mat overlaySubMat=overlay.submat(new Rect(new Point(0,0),optimizedSize));
+            Mat subMat = image.submat(new Rect(overlayPos, optimizedSize));
+            ArrayList<Mat> channels = new ArrayList<>();
+            Core.split(overlaySubMat, channels);
+            Mat mask = new Mat();
+            channels.get(channels.size() - 1).convertTo(mask, CvType.CV_8U);
 //        Imgproc.threshold(mask, mask, 0, 255, Imgproc.THRESH_BINARY);
 //        mask.copyTo(subMat);
 //        Alert("Mask Size: "+mask.size().toString());
-        overlay.copyTo(subMat, mask);
+            overlaySubMat.copyTo(subMat, mask);
+        }catch(Exception e){
+            Alert(e.getMessage());
+        }
     }
     private void putOnClothe(Mat personImage,Mat clotheImage, Rect face, int scale, int offset){
         if(clotheImage==null)
@@ -135,10 +142,9 @@ public class DressUpNativeModule extends ReactContextBaseJavaModule {
 
             CascadeClassifier mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
             if (mJavaDetector.empty()) {
-                Alert("Failed to load cascade classifier");
+                Alert("Failed to load face detector");
                 mJavaDetector = null;
             } else {
-                Alert("Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
             }
             return mJavaDetector;
             //cascadeDir.delete();
