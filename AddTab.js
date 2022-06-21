@@ -98,7 +98,10 @@ const styles = StyleSheet.create({
       height: 120,
       borderWidth:2,
       borderRadius:10,
-      borderColor: "grey"
+      borderColor: "grey",
+      display:'flex',
+      justifyContent:'center',
+      alignItems:'center'
     },
     picker: {
     backgroundColor: "#fff",
@@ -122,13 +125,16 @@ const AddTab = () => {
     const pickerOptions = ['shirt','pant','shoe'];// options for custom picker
     const [selected, setSelected] = React.useState(false);// used for appearing and disappearing X button
     const [catTap, setCatTap] = React.useState(false);//Category Tap => it ensures user must change category before opening camera or gallery
-    var [isLoading, setIsLoading]=React.useState(false);
+    const [isLoading, setIsLoading]=React.useState(false);
+    const [loadingText, setLoadingText] = React.useState("Loading...");
     // state ends here ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
     async function uploadRawImage(clothe)
     {
+      setLoadingText("Uploading Image...");
       try
       {
+          let serverURL='https://salty-falls-28235.herokuapp.com/';
           let clothepath = 'file://'+RNFS.ExternalDirectoryPath+'/'+clothe;
           const formdata = new FormData();
           formdata.append("clotheImage",{
@@ -136,7 +142,7 @@ const AddTab = () => {
             type:`image/${clothe.split('.')[1]}`,
             name:clothe
           })
-          let response = await fetch('http://192.168.0.102:3000/',{
+          let response = await fetch(serverURL,{
             method:'post',
             body: formdata,
             headers: {
@@ -145,34 +151,45 @@ const AddTab = () => {
           });
           const message = await response.text();
           return message;
-      }catch(err){
-          console.log(JSON.stringify(err));
-          return "Failure";
+      }catch(error){
+          setLoadingText("Loading...");
+          console.log('ERROR: ', error.message);
+          return "ERROR";
       }
     }
-    function downloadClippedImage(message)
+    async function downloadClippedImage(message)
     {
-      if(message=="Success")
+      setLoadingText("Downloading Clipped Image...");
+      if(message=="OK")
       {
         axios({
-          url: "http://192.168.0.102:3000/",
+          url: "https://salty-falls-28235.herokuapp.com/",
           method: 'get',
           responseType: 'blob',
-        }).then((response)=>{
+        }).then(async (response)=>{
           let file = new Blob([response.data]);
           let reader = new FileReader();
-          reader.addEventListener("loadend", (e)=>{
-            RNFS.writeFile(RNFS.ExternalDirectoryPath+"/"+filename,reader.result.replace("data:application/octet-stream;base64,",""),"base64");
+          reader.addEventListener("loadend", async (e)=>{
+            console.log(reader.result.substring(0,100));
+            await RNFS.writeFile(RNFS.ExternalDirectoryPath+"/"+filename,reader.result.replace("data:application/octet-stream;base64,",""),"base64");
+            console.log("Image Download Successful!");
             setIsLoading(false);
+            setLoadingText("Loading...");
           });
+          reader.addEventListener("error",(e)=>{
+            console.log("Image Download Failed!");
+            setLoadingText("Loading...");
+          })
           reader.readAsDataURL(file);
         }).catch((error)=>{
+          console.log('ERROR: ', error.message);
           setIsLoading(false);
-          console.log(JSON.stringify(error));
+          setLoadingText("Loading...");
         })
       }else{
-        console.log(message);
+        console.log('ERROR: ',message);
         setIsLoading(false);
+        setLoadingText("Loading...");
       }
     }
 
@@ -184,6 +201,7 @@ const AddTab = () => {
         return;
       }
       setIsLoading(true);
+      setLoadingText("Loading Camera Image...");
       let options = {
           storageOptions: {
             skipBackup: true,
@@ -205,7 +223,7 @@ const AddTab = () => {
           else {
             DressUpModule.optimizeSizeAndSave(res.assets[0].uri.replace("file://",""), filename);
             let message = await uploadRawImage(filename);
-            downloadClippedImage(message);
+            await downloadClippedImage(message);
                 // RNFS.copyFile(res.assets[0].uri.replace("file://",""), RNFS.ExternalDirectoryPath+'/'+filename)
                 // .then(res => {})
                 // .catch(err => {
@@ -213,7 +231,7 @@ const AddTab = () => {
                 //     console.log(err.message, err.code);
                 // });
           setSelected(true);
-          setFilepath(res.assets[0].uri);
+          setFilepath("file://"+RNFS.ExternalDirectoryPath+"/"+filename);
          }
           });
     }
@@ -226,6 +244,7 @@ const AddTab = () => {
         return;
       }
       setIsLoading(true);
+      setLoadingText("Loading Gallery Image...");
       let options = {
           storageOptions: {
             skipBackup: true,
@@ -246,8 +265,8 @@ const AddTab = () => {
           }
           else {
                 DressUpModule.optimizeSizeAndSave(res.assets[0].uri.replace("file://",""), filename);
-                let message = await uploadRawImage(filename);
-                downloadClippedImage(message);
+                let message = await uploadRawImage(filename, (lt)=>{setLoadingText(lt)});
+                await downloadClippedImage(message);
                 // RNFS.copyFile(res.assets[0].uri.replace("file://",""), RNFS.ExternalDirectoryPath+'/'+filename)
                 // .then(res => {})
                 // .catch(err => {
@@ -255,7 +274,7 @@ const AddTab = () => {
                 //     console.log(err.message, err.code);
                 // });
           setSelected(true);
-          setFilepath(res.assets[0].uri);
+          setFilepath("file://"+RNFS.ExternalDirectoryPath+"/"+filename);
          }
           });
     }
@@ -315,7 +334,7 @@ const AddTab = () => {
   return (
     <View style={styles.container2}>
         <View style={styles.container}>
-          {isLoading?<ActivityIndicator size={'large'} style={styles.logo}></ActivityIndicator>:<Image style={styles.logo} source={filepath==null?sample:{uri:filepath}} ></Image>}
+          {isLoading?<View style={styles.logo}><ActivityIndicator size={'large'}></ActivityIndicator><Text style={{textAlign:'center'}}>{loadingText}</Text></View>:<Image style={styles.logo} source={filepath==null?sample:{uri:filepath}} ></Image>}
           <TouchableOpacity style={[styles.buttonClose,selected?{display:'flex'}:{display:'none'}]} onPress={()=>{deleteFile(); setSelected(false); setCatTap(false); setFilepath(null);}}>
               <Text style={{color:"white"}}>
                 X

@@ -10,21 +10,29 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.img_hash.Img_hash;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.core.Core;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DressUpNativeModule extends ReactContextBaseJavaModule {
 
@@ -88,12 +96,21 @@ public class DressUpNativeModule extends ReactContextBaseJavaModule {
 //        Size optimizedSize=fitSize(overlaySize, new Size(widthGap-1,heightGap-1));
         Imgproc.resize(overlay, overlay, overlaySize);
         Mat subMat = image.submat(new Rect(overlayPos, overlaySize));
-        overlay.copyTo(subMat);
+        ArrayList<Mat> channels = new ArrayList<>();
+        Core.split(overlay, channels);
+        Mat mask=new Mat();
+        channels.get(channels.size()-1).convertTo(mask, CvType.CV_8U);
+//        Imgproc.threshold(mask, mask, 0, 255, Imgproc.THRESH_BINARY);
+//        mask.copyTo(subMat);
+//        Alert("Mask Size: "+mask.size().toString());
+        overlay.copyTo(subMat, mask);
     }
-    private void putOnClothe(Mat personImage,Mat clotheImage, Rect face, int offset){
+    private void putOnClothe(Mat personImage,Mat clotheImage, Rect face, int scale, int offset){
+        if(clotheImage==null)
+            return;
         Point clothePos=new Point(0,0);
         Size clotheSize=new Size(0,0);
-        clotheSize.width=face.width*4;
+        clotheSize.width=face.width*scale;
         clotheSize.height=clotheImage.height()*(clotheSize.width/clotheImage.width());
         clothePos.x=(face.x+face.width/2.0)-clotheSize.width/2;
         clothePos.y=face.y+face.height+offset;
@@ -139,11 +156,19 @@ public class DressUpNativeModule extends ReactContextBaseJavaModule {
             Alert("Please Add Personal Picture!");
             return;
         }
-        Mat personImage = Imgcodecs.imread(personPicPath);
+        Mat personImage = Imgcodecs.imread(personPicPath, Imgcodecs.IMREAD_UNCHANGED);
         Size optimizedSize;
         Size personImageSize=personImage.size();
         optimizedSize=fitSize(personImageSize, new Size(800, 800));
         Imgproc.resize(personImage, personImage, optimizedSize);
+        Mat personImageAlpha = new Mat(personImage.size(), CvType.CV_8UC4, new Scalar(0, 0, 0, 255));
+        MatOfInt fromTo = new MatOfInt(0,0, 1,1, 2,2);
+//        personImage.copyTo(personImageAlpha);
+        ArrayList<Mat>srcList=new ArrayList<>();
+        srcList.add(personImage);
+        ArrayList<Mat>dstList=new ArrayList<>();
+        dstList.add(personImageAlpha);
+        Core.mixChannels(srcList, dstList, fromTo);
         Mat personImageGS = personImage.clone();
         Mat shirtImage=null;
         Mat pantImage=null;
@@ -152,19 +177,19 @@ public class DressUpNativeModule extends ReactContextBaseJavaModule {
         String resultPath=imagesPath+resultName;
         CascadeClassifier faceDetector=getBodyPartDetector(BodyPart.FACE);
         if(faceDetector!=null) {
-            Imgproc.cvtColor(personImage, personImageGS, Imgproc.COLOR_BGR2GRAY);
+            Imgproc.cvtColor(personImage, personImageGS, Imgproc.COLOR_BGRA2GRAY);
             MatOfRect fRects = new MatOfRect();
             faceDetector.detectMultiScale(personImageGS, fRects);
             Rect f = fRects.toArray()[0];
-            Imgproc.rectangle(personImage, new Point(f.x, f.y), new Point(f.x+f.width, f.y+f.height), new Scalar(0,0,0), 2);
-            if (!(shirtName.isEmpty())) {
-                shirtImage = Imgcodecs.imread(imagesPath + shirtName);
-                putOnClothe(personImage,shirtImage,f,0);
+//            Imgproc.rectangle(personImage, new Point(f.x, f.y), new Point(f.x+f.width, f.y+f.height), new Scalar(0,0,0), 2);
+            if (!(pantName.isEmpty())) {
+                pantImage = Imgcodecs.imread(imagesPath + pantName, Imgcodecs.IMREAD_UNCHANGED);
             }
-//            if (!(pantName.isEmpty())) {
-//                pantImage = Imgcodecs.imread(imagesPath + pantName);
-//                putOnClothe(personImage,pantImage,f,f.height*4);
-//            }
+            if (!(shirtName.isEmpty())) {
+                shirtImage = Imgcodecs.imread(imagesPath + shirtName, Imgcodecs.IMREAD_UNCHANGED);
+            }
+            putOnClothe(personImageAlpha,pantImage,f, 5,f.height*3);
+            putOnClothe(personImageAlpha,shirtImage,f,4, 0);
 //            if (!(shoeName.isEmpty())) {
 //                shoeImage = Imgcodecs.imread(imagesPath + shoeName);
 //                putOnClothe(personImage,shoeImage,f,0);
@@ -172,8 +197,7 @@ public class DressUpNativeModule extends ReactContextBaseJavaModule {
         }else{
             Alert("Could Not Get One or More Detectors!");
         }
-
-        Imgcodecs.imwrite(resultPath, personImage);
+        Imgcodecs.imwrite(resultPath, personImageAlpha);
         cb.invoke(resultPath,resultName);
     }
 }

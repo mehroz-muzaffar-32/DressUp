@@ -131,6 +131,7 @@ const TryTab = (props) => {
   var [prevName,setPrevName]=React.useState(null);
   var [personPicPath,setPersonPicPath]=React.useState(null);
   var [isLoading, setIsLoading]=React.useState(false);
+  const [loadingText, setLoadingText] = React.useState("Loading...");
   // States End here-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   React.useEffect(()=>{
     if(isLoading)
@@ -205,7 +206,8 @@ const TryTab = (props) => {
     {
       items.push(
         <View key={3} style={[styles.middleLayer]}>
-          <ActivityIndicator size={50} style={[styles.logo]} />
+          <ActivityIndicator size={50} />
+          <Text>{loadingText}</Text>
         </View>);
       return items;
     }
